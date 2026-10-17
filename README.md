@@ -24,10 +24,16 @@ anywhere: Home Assistant and the devices do not need to be on the same network.
 2. The sign-in page of smartilab.it opens: sign in, read what Home Assistant asks, press **Allow**.
 3. Back in Home Assistant your devices appear, the ones you own and the ones shared with you.
 
-Home Assistant may read your devices and command them, never more than your account can: a device
-shared with you to be seen only cannot be commanded. Removing SmartiLab from Home Assistant gives
-the access back: it leaves the console at once. You can also remove it from the SmartiLab console
-(Settings, Integrations, Access), and it stops at once.
+Home Assistant may read your devices and command them, with the commands of their modules, their
+settings and the alarms on their numbers, never more than your account can: a device shared with you
+to be seen only cannot be commanded. Sensitive commands (switching a PC on or off, searching the home
+network, removing a trap) are never given to Home Assistant. Removing SmartiLab from Home Assistant
+gives the access back: it leaves the console at once. You can also remove it from the SmartiLab
+console (Settings, Integrations, Access), and it stops at once.
+
+**From 0.1 to 0.2.** Version 0.2 asks for one more permission (the commands of the modules, their
+settings, the alarms): after the update Home Assistant asks you to sign in again. Everything keeps
+working in the meantime.
 
 ## What you see
 
@@ -40,12 +46,29 @@ the access back: it leaves the console at once. You can also remove it from the 
 | A number you set | number |
 | One of fixed values | select |
 | A text you set | text |
-| A simple command | button |
+| A simple command, or a command of the module with nothing to type | button |
+| A setting of a module | switch, number or text, among the configuration of the device |
+| An alarm on a number, or "no data" | binary sensor (problem): on when it went off |
 | A part of a device, such as a trap of a hub | a device of its own, under the hub |
+| The sums of the traps in the period: catches, emptyings, refills, batteries, service visits… | sensor, on each trap and on the hub |
+| A service visit (cleaning, refill, battery change, check…) | button on each trap; on the hub, for all of them |
 
-A device that is not connected shows its entities as unavailable. Values arrive on the live channel
-of the SmartiLab cloud as they change; if the channel drops, the integration reads the state every
-minute until it is back.
+A device that is not connected shows its entities as unavailable, except the alarms, the sums and the
+service visits, which the cloud keeps. Values arrive on the live channel of the SmartiLab cloud as
+they change; if the channel drops, the integration reads the state every minute until it is back.
+
+**Actions** (Developer tools → Actions, or in your automations):
+
+| Action | What it does |
+|---|---|
+| `smartilab.run_action` | a command of a module with its input: a schedule of a relay board, the name of a trap… |
+| `smartilab.get_module_state` | what a module says about itself, as a response (the schedules, the list of the traps) |
+| `smartilab.set_alarm`, `smartilab.remove_alarm` | set, change or remove an alarm on a number |
+| `smartilab.record_service` | a service visit with a note, on some traps or on all the traps of a hub |
+| `smartilab.get_part_events`, `smartilab.get_part_stats` | the last events of a trap; the sums of a period |
+
+When the device says no (for example a schedule holds that channel), Home Assistant says so in words:
+nothing is ever shown as done when it was not.
 
 **Local and cloud.** LoopMaxPro boards can also show themselves to Home Assistant on the network of
 the house, through an MQTT broker. If you use that too, the same device appears twice: keep one.
@@ -82,9 +105,19 @@ Home Assistant e i dispositivi non devono stare nella stessa rete.
 SmartiLab**: si apre la pagina di accesso di smartilab.it, entri e premi **Consenti**. Tornato in
 Home Assistant compaiono i tuoi dispositivi, i tuoi e quelli condivisi con te.
 
-Home Assistant può leggere e comandare i tuoi dispositivi, mai più di quello che può il tuo account.
-Eliminando SmartiLab da Home Assistant l'accesso si toglie anche dalla console; lo puoi togliere anche
-dalla console SmartiLab (Impostazioni, Integrazioni, Accessi), e smette subito.
+Home Assistant può leggere e comandare i tuoi dispositivi, con i comandi dei loro moduli, le loro
+regolazioni e le soglie sui loro numeri, mai più di quello che può il tuo account; i comandi delicati
+mai. Eliminando SmartiLab da Home Assistant l'accesso si toglie anche dalla console; lo puoi togliere
+anche dalla console SmartiLab (Impostazioni, Integrazioni, Accessi), e smette subito.
+
+**Cosa vedi.** Interruttori, luci, sensori, numeri, scelte, testi e tasti; le regolazioni dei moduli tra
+la configurazione; le soglie come "problema"; per le trappole di un hub le somme del periodo (catture,
+svuotamenti, rabbocchi, interventi…) e un pulsante per ogni intervento. Le azioni `smartilab.*` fanno il
+resto: un comando con i suoi dati (un programma orario), lo stato di un modulo, le soglie, un intervento
+con la nota, gli eventi di una trappola. Quando il dispositivo dice di no, Home Assistant lo dice in parole.
+
+**Dalla 0.1 alla 0.2.** La 0.2 chiede un permesso in più (i comandi dei moduli, le regolazioni, le
+soglie): dopo l'aggiornamento Home Assistant chiede di accedere di nuovo. Nel frattempo tutto funziona.
 
 Per un dispositivo Professional serve una licenza in vigore che dia il controllo da internet. Se usi
 anche il collegamento di casa delle schede LoopMaxPro (MQTT), lo stesso dispositivo compare due

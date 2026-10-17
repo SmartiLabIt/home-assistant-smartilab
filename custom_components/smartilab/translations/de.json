@@ -6,7 +6,7 @@
       },
       "reauth_confirm": {
         "title": "Erneut bei SmartiLab anmelden",
-        "description": "Der Zugang von Home Assistant zu deinem SmartiLab-Konto gilt nicht mehr. Melde dich erneut an, um deine Geräte hier zu behalten."
+        "description": "Melde dich erneut bei SmartiLab an: der Zugang von Home Assistant zu deinem Konto gilt nicht mehr, oder diese Version der Integration fragt nach einer weiteren Berechtigung (die Befehle der Module, ihre Einstellungen, die Schwellen). Deine Geräte bleiben hier."
       }
     },
     "abort": {
@@ -72,6 +72,209 @@
     },
     "not_ready": {
       "message": "Die Anmeldung bei SmartiLab ist gerade nicht verfügbar."
+    },
+    "refused_denied": {
+      "message": "Das Gerät erlaubt es gerade nicht (zum Beispiel hält ein Zeitplan diesen Kanal). Nichts wurde geändert."
+    },
+    "refused_invalid": {
+      "message": "Das Gerät hat den Wert nicht angenommen ({field}). Nichts wurde geändert."
+    },
+    "refused_not_found": {
+      "message": "Das Gerät hat es nicht mehr: die Integration liest es neu."
+    },
+    "owner_only": {
+      "message": "Nur der Besitzer des Geräts kann das tun."
+    },
+    "not_a_device": {
+      "message": "Wähle ein SmartiLab-Gerät."
+    },
+    "one_hub": {
+      "message": "Wähle die Fallen eines einzigen Hubs auf einmal."
+    },
+    "alarm_fields": {
+      "message": "Für eine neue Schwelle braucht es das Modul, die Zahl und die Art."
+    },
+    "not_a_part": {
+      "message": "Wähle eine Falle eines Hubs (einen Teil eines Geräts)."
+    },
+    "no_parts": {
+      "message": "Dieses Gerät hat keine Teile, die SmartiLab führt."
+    }
+  },
+  "services": {
+    "run_action": {
+      "name": "Befehl ausführen",
+      "description": "Führt einen Befehl eines Moduls mit seinen Daten aus: zum Beispiel einen Zeitplan einer Relaisplatine, den Namen einer Falle, einen Lieblingssender. Das Gerät muss verbunden sein; lehnt es ab, geschieht nichts.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "Das SmartiLab-Gerät."
+        },
+        "module": {
+          "name": "Modul",
+          "description": "Die Kennung des Moduls, wie in der Beschreibung des Geräts (zum Beispiel zappy2)."
+        },
+        "action": {
+          "name": "Befehl",
+          "description": "Die Kennung des Befehls (zum Beispiel sched.add)."
+        },
+        "input": {
+          "name": "Daten",
+          "description": "Was der Befehl braucht, nach Namen."
+        },
+        "confirm": {
+          "name": "Bestätigen",
+          "description": "Für einen Befehl, der eine Bestätigung verlangt."
+        }
+      }
+    },
+    "get_module_state": {
+      "name": "Zustand eines Moduls lesen",
+      "description": "Was ein Modul über sich sagt: zum Beispiel die Zeitpläne einer Relaisplatine und welchen Kanal gerade ein Zeitplan hält.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "Das SmartiLab-Gerät."
+        },
+        "module": {
+          "name": "Modul",
+          "description": "Die Kennung des Moduls (zum Beispiel zappy2)."
+        }
+      }
+    },
+    "set_alarm": {
+      "name": "Schwelle setzen",
+      "description": "Setzt eine Schwelle auf eine Zahl eines Geräts oder ändert eine: über oder unter einem Wert für einige Minuten, oder keine Daten für einige Minuten. Nur der Besitzer.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "Das SmartiLab-Gerät."
+        },
+        "alarm_id": {
+          "name": "Schwelle",
+          "description": "Zum Ändern: ihre Kennung. Leer für eine neue."
+        },
+        "module": {
+          "name": "Modul",
+          "description": "Die Kennung des Moduls."
+        },
+        "property": {
+          "name": "Zahl",
+          "description": "Die Kennung der Zahl."
+        },
+        "part": {
+          "name": "Der Teile",
+          "description": "Für eine Zahl der Teile (die Fallen eines Hubs): gilt für jeden."
+        },
+        "kind": {
+          "name": "Art",
+          "description": "Über oder unter einem Wert, oder keine Daten."
+        },
+        "level": {
+          "name": "Wert",
+          "description": "Der Wert, für über und unter."
+        },
+        "minutes": {
+          "name": "Minuten",
+          "description": "Wie lange, bevor gemeldet wird."
+        },
+        "back": {
+          "name": "Wieder in Ordnung",
+          "description": "Auch melden, wenn es wieder in Ordnung ist."
+        }
+      }
+    },
+    "remove_alarm": {
+      "name": "Schwelle entfernen",
+      "description": "Entfernt eine Schwelle eines Geräts. Nur der Besitzer.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "Das SmartiLab-Gerät."
+        },
+        "alarm_id": {
+          "name": "Schwelle",
+          "description": "Ihre Kennung."
+        },
+        "no_data": {
+          "name": "Keine Daten",
+          "description": "Es ist eine Schwelle „Keine Daten“."
+        }
+      }
+    },
+    "record_service": {
+      "name": "Einsatz erfassen",
+      "description": "Erfasst einen Einsatz an Fallen: wähle die Fallen, oder den Hub für alle. Er wird in der Cloud gespeichert: das Gerät darf aus sein.",
+      "fields": {
+        "device_id": {
+          "name": "Fallen oder Hub",
+          "description": "Die Fallen, oder der Hub für alle seine."
+        },
+        "type": {
+          "name": "Einsatz",
+          "description": "Was gemacht wurde."
+        },
+        "note": {
+          "name": "Notiz",
+          "description": "Eine Notiz, nach Wahl."
+        }
+      }
+    },
+    "get_part_events": {
+      "name": "Ereignisse einer Falle",
+      "description": "Die letzten Ereignisse einer Falle: Fänge, Leerungen, Nachfüllungen, Alarme, Einsätze.",
+      "fields": {
+        "device_id": {
+          "name": "Falle",
+          "description": "Die Falle."
+        },
+        "limit": {
+          "name": "Wie viele",
+          "description": "Höchstens 200."
+        }
+      }
+    },
+    "get_part_stats": {
+      "name": "Summen der Fallen",
+      "description": "Wie viele Fänge, Leerungen, Nachfüllungen, Batteriewechsel, Alarme und Einsätze in einem Zeitraum, insgesamt und je Falle. Ohne Beginn: seit der Hub an seinem Standort ist, oder die letzten 30 Tage.",
+      "fields": {
+        "device_id": {
+          "name": "Hub",
+          "description": "Der Hub."
+        },
+        "module": {
+          "name": "Modul",
+          "description": "Die Kennung des Moduls (zum Beispiel rattraphub)."
+        },
+        "from": {
+          "name": "Von",
+          "description": "Zeit ISO 8601."
+        },
+        "to": {
+          "name": "Bis",
+          "description": "Zeit ISO 8601; ohne: jetzt."
+        }
+      }
+    }
+  },
+  "selector": {
+    "kind": {
+      "options": {
+        "above": "Über einem Wert",
+        "below": "Unter einem Wert",
+        "no_data": "Keine Daten"
+      }
+    },
+    "service": {
+      "options": {
+        "cleaning": "Reinigung",
+        "refill": "Flüssigkeit nachgefüllt",
+        "battery": "Batteriewechsel",
+        "replace": "Austausch",
+        "move": "Umstellung",
+        "check": "Kontrolle",
+        "other": "Sonstiges"
+      }
     }
   }
 }

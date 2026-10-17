@@ -1,0 +1,162 @@
+run_action:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    module:
+      required: true
+      example: zappy2
+      selector:
+        text:
+    action:
+      required: true
+      example: sched.add
+      selector:
+        text:
+    input:
+      example: '{"channel": 0, "days": 127, "on": "07:00", "off": "08:00"}'
+      selector:
+        object:
+    confirm:
+      default: false
+      selector:
+        boolean:
+
+get_module_state:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    module:
+      required: true
+      example: zappy2
+      selector:
+        text:
+
+set_alarm:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    alarm_id:
+      example: al_abcdefghijkl
+      selector:
+        text:
+    module:
+      example: rattraphub
+      selector:
+        text:
+    property:
+      example: liquid
+      selector:
+        text:
+    part:
+      default: false
+      selector:
+        boolean:
+    kind:
+      selector:
+        select:
+          translation_key: kind
+          options:
+            - above
+            - below
+            - no_data
+    level:
+      selector:
+        number:
+          mode: box
+    minutes:
+      selector:
+        number:
+          min: 0
+          max: 10080
+          mode: box
+    back:
+      default: true
+      selector:
+        boolean:
+
+remove_alarm:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    alarm_id:
+      required: true
+      example: al_abcdefghijkl
+      selector:
+        text:
+    no_data:
+      default: false
+      selector:
+        boolean:
+
+record_service:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+          multiple: true
+    type:
+      required: true
+      selector:
+        select:
+          translation_key: service
+          options:
+            - cleaning
+            - refill
+            - battery
+            - replace
+            - move
+            - check
+            - other
+    note:
+      selector:
+        text:
+          multiline: true
+
+get_part_events:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    limit:
+      default: 50
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+
+get_part_stats:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: smartilab
+    module:
+      required: true
+      example: rattraphub
+      selector:
+        text:
+    from:
+      example: "2026-10-01T00:00:00Z"
+      selector:
+        text:
+    to:
+      selector:
+        text:

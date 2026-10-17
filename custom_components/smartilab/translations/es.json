@@ -6,7 +6,7 @@
       },
       "reauth_confirm": {
         "title": "Vuelve a acceder a SmartiLab",
-        "description": "El acceso de Home Assistant a tu cuenta SmartiLab ya no vale. Vuelve a acceder para mantener aquí tus dispositivos."
+        "description": "Vuelve a acceder a SmartiLab: el acceso de Home Assistant a tu cuenta ya no vale, o esta versión de la integración pide un permiso más (los comandos de los módulos, sus ajustes, los umbrales). Tus dispositivos se quedan aquí."
       }
     },
     "abort": {
@@ -72,6 +72,209 @@
     },
     "not_ready": {
       "message": "El acceso con SmartiLab no está disponible ahora."
+    },
+    "refused_denied": {
+      "message": "El dispositivo no lo permite ahora (por ejemplo, un programa horario ocupa esa línea). No ha cambiado nada."
+    },
+    "refused_invalid": {
+      "message": "El dispositivo no aceptó el valor ({field}). No ha cambiado nada."
+    },
+    "refused_not_found": {
+      "message": "El dispositivo ya no lo tiene: la integración lo vuelve a leer."
+    },
+    "owner_only": {
+      "message": "Solo el propietario del dispositivo puede hacerlo."
+    },
+    "not_a_device": {
+      "message": "Elige un dispositivo SmartiLab."
+    },
+    "one_hub": {
+      "message": "Elige las trampas de un solo hub a la vez."
+    },
+    "alarm_fields": {
+      "message": "Para un umbral nuevo hacen falta el módulo, el número y el tipo."
+    },
+    "not_a_part": {
+      "message": "Elige una trampa de un hub (una parte de un dispositivo)."
+    },
+    "no_parts": {
+      "message": "Este dispositivo no tiene partes que SmartiLab guarde."
+    }
+  },
+  "services": {
+    "run_action": {
+      "name": "Ejecutar un comando",
+      "description": "Ejecuta un comando de un módulo, con sus datos: por ejemplo un programa horario de una placa de relés, el nombre de una trampa, una emisora favorita. El dispositivo debe estar conectado; si lo rechaza, no se hace nada.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "El dispositivo SmartiLab."
+        },
+        "module": {
+          "name": "Módulo",
+          "description": "El identificador del módulo, como en la descripción del dispositivo (por ejemplo zappy2)."
+        },
+        "action": {
+          "name": "Comando",
+          "description": "El identificador del comando (por ejemplo sched.add)."
+        },
+        "input": {
+          "name": "Datos",
+          "description": "Lo que el comando necesita, por nombre."
+        },
+        "confirm": {
+          "name": "Confirmar",
+          "description": "Para un comando que pide ser confirmado."
+        }
+      }
+    },
+    "get_module_state": {
+      "name": "Leer el estado de un módulo",
+      "description": "Lo que un módulo dice de sí mismo: por ejemplo los programas horarios de una placa de relés y qué línea ocupa ahora un programa.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "El dispositivo SmartiLab."
+        },
+        "module": {
+          "name": "Módulo",
+          "description": "El identificador del módulo (por ejemplo zappy2)."
+        }
+      }
+    },
+    "set_alarm": {
+      "name": "Poner un umbral",
+      "description": "Pone un umbral en un número de un dispositivo, o cambia uno: por encima o por debajo de un nivel durante unos minutos, o sin datos durante unos minutos. Solo el propietario.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "El dispositivo SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Umbral",
+          "description": "Para cambiar uno: su identificador. Vacío para uno nuevo."
+        },
+        "module": {
+          "name": "Módulo",
+          "description": "El identificador del módulo."
+        },
+        "property": {
+          "name": "Número",
+          "description": "El identificador del número."
+        },
+        "part": {
+          "name": "De las partes",
+          "description": "Para un número de las partes (las trampas de un hub): vale para cada una."
+        },
+        "kind": {
+          "name": "Tipo",
+          "description": "Por encima o por debajo de un nivel, o sin datos."
+        },
+        "level": {
+          "name": "Nivel",
+          "description": "El nivel, para por encima y por debajo."
+        },
+        "minutes": {
+          "name": "Minutos",
+          "description": "Desde hace cuánto, antes del aviso."
+        },
+        "back": {
+          "name": "De nuevo bien",
+          "description": "Avisar también cuando vuelve a estar bien."
+        }
+      }
+    },
+    "remove_alarm": {
+      "name": "Quitar un umbral",
+      "description": "Quita un umbral de un dispositivo. Solo el propietario.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "El dispositivo SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Umbral",
+          "description": "Su identificador."
+        },
+        "no_data": {
+          "name": "Sin datos",
+          "description": "Es un umbral «Sin datos»."
+        }
+      }
+    },
+    "record_service": {
+      "name": "Registrar una intervención",
+      "description": "Registra una intervención en las trampas: elige las trampas, o el hub para todas. Se escribe en la nube: el dispositivo puede estar apagado.",
+      "fields": {
+        "device_id": {
+          "name": "Trampas o hub",
+          "description": "Las trampas, o el hub para todas las suyas."
+        },
+        "type": {
+          "name": "Intervención",
+          "description": "Qué se hizo."
+        },
+        "note": {
+          "name": "Nota",
+          "description": "Una nota, si quieres."
+        }
+      }
+    },
+    "get_part_events": {
+      "name": "Eventos de una trampa",
+      "description": "Los últimos eventos de una trampa: capturas, vaciados, recargas, alarmas, intervenciones.",
+      "fields": {
+        "device_id": {
+          "name": "Trampa",
+          "description": "La trampa."
+        },
+        "limit": {
+          "name": "Cuántos",
+          "description": "Como máximo 200."
+        }
+      }
+    },
+    "get_part_stats": {
+      "name": "Sumas de las trampas",
+      "description": "Cuántas capturas, vaciados, recargas, cambios de batería, alarmas e intervenciones en un periodo, en total y trampa por trampa. Sin inicio: desde que el hub está en su sitio, o los últimos 30 días.",
+      "fields": {
+        "device_id": {
+          "name": "Hub",
+          "description": "El hub."
+        },
+        "module": {
+          "name": "Módulo",
+          "description": "El identificador del módulo (por ejemplo rattraphub)."
+        },
+        "from": {
+          "name": "Desde",
+          "description": "Hora ISO 8601."
+        },
+        "to": {
+          "name": "Hasta",
+          "description": "Hora ISO 8601; si no, ahora."
+        }
+      }
+    }
+  },
+  "selector": {
+    "kind": {
+      "options": {
+        "above": "Por encima de un nivel",
+        "below": "Por debajo de un nivel",
+        "no_data": "Sin datos"
+      }
+    },
+    "service": {
+      "options": {
+        "cleaning": "Limpieza",
+        "refill": "Recarga del líquido",
+        "battery": "Cambio de batería",
+        "replace": "Sustitución",
+        "move": "Desplazamiento",
+        "check": "Control",
+        "other": "Otro"
+      }
     }
   }
 }

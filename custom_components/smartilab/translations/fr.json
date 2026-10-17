@@ -6,7 +6,7 @@
       },
       "reauth_confirm": {
         "title": "Se reconnecter à SmartiLab",
-        "description": "L'accès de Home Assistant à votre compte SmartiLab n'est plus valable. Reconnectez-vous pour garder vos appareils ici."
+        "description": "Reconnectez-vous à SmartiLab : l'accès de Home Assistant à votre compte n'est plus valable, ou cette version de l'intégration demande une autorisation de plus (les commandes des modules, leurs réglages, les seuils). Vos appareils restent ici."
       }
     },
     "abort": {
@@ -72,6 +72,209 @@
     },
     "not_ready": {
       "message": "La connexion avec SmartiLab n'est pas disponible pour l'instant."
+    },
+    "refused_denied": {
+      "message": "L'appareil ne le permet pas maintenant (par exemple un programme horaire tient cette voie). Rien n'a changé."
+    },
+    "refused_invalid": {
+      "message": "L'appareil n'a pas accepté la valeur ({field}). Rien n'a changé."
+    },
+    "refused_not_found": {
+      "message": "L'appareil ne l'a plus : l'intégration le relit."
+    },
+    "owner_only": {
+      "message": "Seul le propriétaire de l'appareil peut le faire."
+    },
+    "not_a_device": {
+      "message": "Choisissez un appareil SmartiLab."
+    },
+    "one_hub": {
+      "message": "Choisissez les pièges d'un seul hub à la fois."
+    },
+    "alarm_fields": {
+      "message": "Pour un nouveau seuil, il faut le module, le nombre et le type."
+    },
+    "not_a_part": {
+      "message": "Choisissez un piège d'un hub (une partie d'un appareil)."
+    },
+    "no_parts": {
+      "message": "Cet appareil n'a pas de parties que SmartiLab suit."
+    }
+  },
+  "services": {
+    "run_action": {
+      "name": "Lancer une commande",
+      "description": "Lance une commande d'un module, avec ses données : par exemple un programme horaire d'une carte à relais, le nom d'un piège, une station préférée. L'appareil doit être connecté ; s'il refuse, rien n'est fait.",
+      "fields": {
+        "device_id": {
+          "name": "Appareil",
+          "description": "L'appareil SmartiLab."
+        },
+        "module": {
+          "name": "Module",
+          "description": "L'identifiant du module, comme dans la description de l'appareil (par exemple zappy2)."
+        },
+        "action": {
+          "name": "Commande",
+          "description": "L'identifiant de la commande (par exemple sched.add)."
+        },
+        "input": {
+          "name": "Données",
+          "description": "Ce que la commande attend, par nom."
+        },
+        "confirm": {
+          "name": "Confirmer",
+          "description": "Pour une commande qui demande une confirmation."
+        }
+      }
+    },
+    "get_module_state": {
+      "name": "Lire l'état d'un module",
+      "description": "Ce qu'un module dit de lui-même : par exemple les programmes horaires d'une carte à relais et quelle voie un programme tient maintenant.",
+      "fields": {
+        "device_id": {
+          "name": "Appareil",
+          "description": "L'appareil SmartiLab."
+        },
+        "module": {
+          "name": "Module",
+          "description": "L'identifiant du module (par exemple zappy2)."
+        }
+      }
+    },
+    "set_alarm": {
+      "name": "Mettre un seuil",
+      "description": "Met un seuil sur un nombre d'un appareil, ou en change un : au-dessus ou en dessous d'un niveau pendant quelques minutes, ou aucune donnée pendant quelques minutes. Seulement le propriétaire.",
+      "fields": {
+        "device_id": {
+          "name": "Appareil",
+          "description": "L'appareil SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Seuil",
+          "description": "Pour en changer un : son identifiant. Vide pour un nouveau."
+        },
+        "module": {
+          "name": "Module",
+          "description": "L'identifiant du module."
+        },
+        "property": {
+          "name": "Nombre",
+          "description": "L'identifiant du nombre."
+        },
+        "part": {
+          "name": "Des parties",
+          "description": "Pour un nombre des parties (les pièges d'un hub) : il vaut pour chacune."
+        },
+        "kind": {
+          "name": "Type",
+          "description": "Au-dessus ou en dessous d'un niveau, ou aucune donnée."
+        },
+        "level": {
+          "name": "Niveau",
+          "description": "Le niveau, pour au-dessus et en dessous."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "Depuis combien de temps, avant l'avis."
+        },
+        "back": {
+          "name": "Revenu à la normale",
+          "description": "Avertir aussi quand c'est revenu à la normale."
+        }
+      }
+    },
+    "remove_alarm": {
+      "name": "Retirer un seuil",
+      "description": "Retire un seuil d'un appareil. Seulement le propriétaire.",
+      "fields": {
+        "device_id": {
+          "name": "Appareil",
+          "description": "L'appareil SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Seuil",
+          "description": "Son identifiant."
+        },
+        "no_data": {
+          "name": "Aucune donnée",
+          "description": "C'est un seuil « Aucune donnée »."
+        }
+      }
+    },
+    "record_service": {
+      "name": "Enregistrer une intervention",
+      "description": "Enregistre une intervention sur des pièges : choisissez les pièges, ou le hub pour tous. Elle est écrite dans le cloud : l'appareil peut être éteint.",
+      "fields": {
+        "device_id": {
+          "name": "Pièges ou hub",
+          "description": "Les pièges, ou le hub pour tous les siens."
+        },
+        "type": {
+          "name": "Intervention",
+          "description": "Ce qui a été fait."
+        },
+        "note": {
+          "name": "Note",
+          "description": "Une note, au choix."
+        }
+      }
+    },
+    "get_part_events": {
+      "name": "Événements d'un piège",
+      "description": "Les derniers événements d'un piège : captures, vidages, recharges, alarmes, interventions.",
+      "fields": {
+        "device_id": {
+          "name": "Piège",
+          "description": "Le piège."
+        },
+        "limit": {
+          "name": "Combien",
+          "description": "Au plus 200."
+        }
+      }
+    },
+    "get_part_stats": {
+      "name": "Sommes des pièges",
+      "description": "Combien de captures, vidages, recharges, changements de batterie, alarmes et interventions sur une période, au total et piège par piège. Sans début : depuis que le hub est sur son site, ou les 30 derniers jours.",
+      "fields": {
+        "device_id": {
+          "name": "Hub",
+          "description": "Le hub."
+        },
+        "module": {
+          "name": "Module",
+          "description": "L'identifiant du module (par exemple rattraphub)."
+        },
+        "from": {
+          "name": "Du",
+          "description": "Heure ISO 8601."
+        },
+        "to": {
+          "name": "Au",
+          "description": "Heure ISO 8601 ; sinon maintenant."
+        }
+      }
+    }
+  },
+  "selector": {
+    "kind": {
+      "options": {
+        "above": "Au-dessus d'un niveau",
+        "below": "En dessous d'un niveau",
+        "no_data": "Aucune donnée"
+      }
+    },
+    "service": {
+      "options": {
+        "cleaning": "Nettoyage",
+        "refill": "Recharge du liquide",
+        "battery": "Changement de batterie",
+        "replace": "Remplacement",
+        "move": "Déplacement",
+        "check": "Contrôle",
+        "other": "Autre"
+      }
     }
   }
 }

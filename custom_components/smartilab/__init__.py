@@ -31,6 +31,7 @@ from homeassistant.helpers.config_entry_oauth2_flow import (
 )
 from homeassistant.helpers.typing import ConfigType
 
+from . import services
 from .api import SmartiLabApi, SmartiLabError, give_back
 from .const import CLIENT_ID, CONF_BROWSER, CONF_SERVER, DATA_URLS, DEFAULT_SERVER, DOMAIN
 from .coordinator import SmartiLabCoordinator
@@ -70,6 +71,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     server = str(conf.get(CONF_SERVER) or DEFAULT_SERVER).rstrip("/")
     hass.data[DATA_URLS] = Urls(server=server, browser=str(conf.get(CONF_BROWSER) or server).rstrip("/"))
     await async_import_client_credential(hass, DOMAIN, ClientCredential(CLIENT_ID, "", name="SmartiLab"))
+    # The actions (0.2.0): a command with its input, the state of a module, the alarms, the service visits on the traps.
+    services.setup(hass)
     return True
 
 
@@ -94,6 +97,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: SmartiLabConfigEntry) ->
     api = SmartiLabApi(async_get_clientsession(hass), urls.server, access, hass.config.language)
     coordinator = SmartiLabCoordinator(hass, entry, api)
     await coordinator.async_config_entry_first_refresh()
+    if not coordinator.advanced:
+        # Signed in with 0.1: without the advanced commands (the commands of the modules, their settings, the alarms).
+        # Everything works as before; Home Assistant asks to sign in again, and "Allow" shows the new permission.
+        entry.async_start_reauth(hass)
     # A device with parts (a hub with its traps) goes in the device registry first: its parts point to it
     # by the id it has there.
     registry = dr.async_get(hass)

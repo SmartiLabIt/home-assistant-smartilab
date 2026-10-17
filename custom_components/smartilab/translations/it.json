@@ -6,7 +6,7 @@
       },
       "reauth_confirm": {
         "title": "Accedi di nuovo a SmartiLab",
-        "description": "L'accesso di Home Assistant al tuo account SmartiLab non vale più. Accedi di nuovo per tenere qui i tuoi dispositivi."
+        "description": "Accedi di nuovo a SmartiLab: l'accesso di Home Assistant al tuo account non vale più, oppure questa versione dell'integrazione chiede un permesso in più (i comandi dei moduli, le loro regolazioni, le soglie). I tuoi dispositivi restano qui."
       }
     },
     "abort": {
@@ -72,6 +72,209 @@
     },
     "not_ready": {
       "message": "L'accesso con SmartiLab ora non è disponibile."
+    },
+    "refused_denied": {
+      "message": "Il dispositivo adesso non lo permette (per esempio un programma orario tiene quella linea). Non è cambiato niente."
+    },
+    "refused_invalid": {
+      "message": "Il dispositivo non ha accettato il valore ({field}). Non è cambiato niente."
+    },
+    "refused_not_found": {
+      "message": "Il dispositivo non ce l'ha più: l'integrazione lo rilegge."
+    },
+    "owner_only": {
+      "message": "Solo il proprietario del dispositivo può farlo."
+    },
+    "not_a_device": {
+      "message": "Scegli un dispositivo SmartiLab."
+    },
+    "one_hub": {
+      "message": "Scegli le trappole di un hub alla volta."
+    },
+    "alarm_fields": {
+      "message": "Per una soglia nuova servono il modulo, il numero e il tipo."
+    },
+    "not_a_part": {
+      "message": "Scegli una trappola di un hub (una parte di un dispositivo)."
+    },
+    "no_parts": {
+      "message": "Questo dispositivo non ha parti che SmartiLab tiene."
+    }
+  },
+  "services": {
+    "run_action": {
+      "name": "Lancia un comando",
+      "description": "Lancia un comando di un modulo, con i suoi dati: per esempio un programma orario di una scheda relè, il nome di una trappola, una stazione preferita. Il dispositivo deve essere collegato; se rifiuta, non si fa niente.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "Il dispositivo SmartiLab."
+        },
+        "module": {
+          "name": "Modulo",
+          "description": "La sigla del modulo, come nella descrizione del dispositivo (per esempio zappy2)."
+        },
+        "action": {
+          "name": "Comando",
+          "description": "La sigla del comando (per esempio sched.add)."
+        },
+        "input": {
+          "name": "Dati",
+          "description": "Quello che il comando vuole, per nome."
+        },
+        "confirm": {
+          "name": "Conferma",
+          "description": "Per un comando che chiede di essere confermato."
+        }
+      }
+    },
+    "get_module_state": {
+      "name": "Leggi lo stato di un modulo",
+      "description": "Quello che un modulo dice di sé: per esempio i programmi orari di una scheda relè e quale linea tiene adesso un programma.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "Il dispositivo SmartiLab."
+        },
+        "module": {
+          "name": "Modulo",
+          "description": "La sigla del modulo (per esempio zappy2)."
+        }
+      }
+    },
+    "set_alarm": {
+      "name": "Metti una soglia",
+      "description": "Mette una soglia su un numero di un dispositivo, o ne cambia una: sopra o sotto un livello per qualche minuto, o nessun dato per qualche minuto. Solo il proprietario.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "Il dispositivo SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Soglia",
+          "description": "Per cambiarne una: la sua sigla. Vuoto per una nuova."
+        },
+        "module": {
+          "name": "Modulo",
+          "description": "La sigla del modulo."
+        },
+        "property": {
+          "name": "Numero",
+          "description": "La sigla del numero."
+        },
+        "part": {
+          "name": "Delle parti",
+          "description": "Per un numero delle parti (le trappole di un hub): vale per ognuna."
+        },
+        "kind": {
+          "name": "Tipo",
+          "description": "Sopra o sotto un livello, o nessun dato."
+        },
+        "level": {
+          "name": "Livello",
+          "description": "Il livello, per sopra e sotto."
+        },
+        "minutes": {
+          "name": "Minuti",
+          "description": "Da quanto, prima dell'avviso."
+        },
+        "back": {
+          "name": "Tornato a posto",
+          "description": "Avvisa anche quando torna a posto."
+        }
+      }
+    },
+    "remove_alarm": {
+      "name": "Togli una soglia",
+      "description": "Toglie una soglia di un dispositivo. Solo il proprietario.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "Il dispositivo SmartiLab."
+        },
+        "alarm_id": {
+          "name": "Soglia",
+          "description": "La sua sigla."
+        },
+        "no_data": {
+          "name": "Nessun dato",
+          "description": "È una soglia \"nessun dato\"."
+        }
+      }
+    },
+    "record_service": {
+      "name": "Registra un intervento",
+      "description": "Registra un intervento sulle trappole: scegli le trappole, o l'hub per tutte. Si scrive sul server: il dispositivo può essere spento.",
+      "fields": {
+        "device_id": {
+          "name": "Trappole o hub",
+          "description": "Le trappole, o l'hub per tutte le sue."
+        },
+        "type": {
+          "name": "Intervento",
+          "description": "Che cosa è stato fatto."
+        },
+        "note": {
+          "name": "Nota",
+          "description": "Una nota, a scelta."
+        }
+      }
+    },
+    "get_part_events": {
+      "name": "Eventi di una trappola",
+      "description": "Gli ultimi eventi di una trappola: catture, svuotamenti, rabbocchi, allarmi, interventi.",
+      "fields": {
+        "device_id": {
+          "name": "Trappola",
+          "description": "La trappola."
+        },
+        "limit": {
+          "name": "Quanti",
+          "description": "Al più 200."
+        }
+      }
+    },
+    "get_part_stats": {
+      "name": "Somme delle trappole",
+      "description": "Quante catture, svuotamenti, rabbocchi, batterie cambiate, allarmi e interventi in un periodo, in tutto e trappola per trappola. Senza inizio: da quando l'hub è nel suo sito, o gli ultimi 30 giorni.",
+      "fields": {
+        "device_id": {
+          "name": "Hub",
+          "description": "L'hub."
+        },
+        "module": {
+          "name": "Modulo",
+          "description": "La sigla del modulo (per esempio rattraphub)."
+        },
+        "from": {
+          "name": "Da",
+          "description": "Ora ISO 8601."
+        },
+        "to": {
+          "name": "A",
+          "description": "Ora ISO 8601; senza, adesso."
+        }
+      }
+    }
+  },
+  "selector": {
+    "kind": {
+      "options": {
+        "above": "Sopra un livello",
+        "below": "Sotto un livello",
+        "no_data": "Nessun dato"
+      }
+    },
+    "service": {
+      "options": {
+        "cleaning": "Pulizia",
+        "refill": "Rabbocco del liquido",
+        "battery": "Cambio batteria",
+        "replace": "Sostituzione",
+        "move": "Spostamento",
+        "check": "Controllo",
+        "other": "Altro"
+      }
     }
   }
 }

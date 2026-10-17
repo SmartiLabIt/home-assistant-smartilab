@@ -124,6 +124,11 @@ class LiveChannel:
             return
         if event == "property.changed":
             self._coordinator.changed(device, data)
+            # A part the cloud keeps changed (a catch, an emptying): its sums of the period, read again shortly.
+            self._coordinator.soon(device, data)
+        elif event in ("alarm.raised", "alarm.cleared", "silence.raised", "silence.cleared"):
+            # An alarm went off or came back: its state, read again now.
+            self._hass.async_create_task(self._coordinator.refresh_extras(device))
         elif event in ("device.online", "device.offline"):
             self._coordinator.connected(device, event == "device.online")
         elif event in ("description.changed", "license.changed", "firmware.done"):

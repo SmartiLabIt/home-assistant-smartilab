@@ -16,9 +16,11 @@ AUTHORIZE_PATH: Final = "/sc/api/oauth/authorize"
 TOKEN_PATH: Final = "/sc/api/oauth/token"
 REVOKE_PATH: Final = "/sc/api/oauth/revoke"
 
-# The program "Home Assistant" of the SmartiLab cloud: a public client, protected by PKCE.
+# The program "Home Assistant" of the SmartiLab cloud: a public client, protected by PKCE. With 0.2.0 also the
+# advanced commands: the commands of the modules, their settings, the alarms. Sensitive commands never.
 CLIENT_ID: Final = "smartilab-home-assistant"
-SCOPES: Final = "account devices:read devices:control"
+SCOPES: Final = "account devices:read devices:control devices:advanced"
+ADVANCED: Final = "devices:advanced"
 
 # Configuration in configuration.yaml, only for who develops against another console.
 CONF_SERVER: Final = "server"

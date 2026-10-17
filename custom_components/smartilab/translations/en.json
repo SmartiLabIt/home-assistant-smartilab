@@ -6,7 +6,7 @@
       },
       "reauth_confirm": {
         "title": "Sign in to SmartiLab again",
-        "description": "The access of Home Assistant to your SmartiLab account is no longer valid. Sign in again to keep your devices here."
+        "description": "Sign in to SmartiLab again: the access of Home Assistant to your account is no longer valid, or this version of the integration asks for one more permission (the commands of the modules, their settings, the alarms). Your devices stay here."
       }
     },
     "abort": {
@@ -72,6 +72,209 @@
     },
     "not_ready": {
       "message": "Signing in with SmartiLab is not available now."
+    },
+    "refused_denied": {
+      "message": "The device does not allow it now (for example a schedule holds that channel). Nothing changed."
+    },
+    "refused_invalid": {
+      "message": "The device did not accept the value ({field}). Nothing changed."
+    },
+    "refused_not_found": {
+      "message": "The device no longer has it: the integration reads it again."
+    },
+    "owner_only": {
+      "message": "Only the owner of the device can do this."
+    },
+    "not_a_device": {
+      "message": "Pick a SmartiLab device."
+    },
+    "one_hub": {
+      "message": "Pick the traps of one hub at a time."
+    },
+    "alarm_fields": {
+      "message": "To set a new alarm, say the module, the number and the kind."
+    },
+    "not_a_part": {
+      "message": "Pick a trap of a hub (a part of a device)."
+    },
+    "no_parts": {
+      "message": "This device has no parts that SmartiLab keeps."
+    }
+  },
+  "services": {
+    "run_action": {
+      "name": "Run a command",
+      "description": "Runs a command of a module, with its input: for example a schedule of a relay board, the name of a trap, a favourite station. The device must be connected; if it refuses, nothing is done.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The SmartiLab device."
+        },
+        "module": {
+          "name": "Module",
+          "description": "The id of the module, as in the description of the device (for example zappy2)."
+        },
+        "action": {
+          "name": "Command",
+          "description": "The id of the command (for example sched.add)."
+        },
+        "input": {
+          "name": "Input",
+          "description": "What the command wants, by name."
+        },
+        "confirm": {
+          "name": "Confirm",
+          "description": "For a command that asks to be confirmed."
+        }
+      }
+    },
+    "get_module_state": {
+      "name": "Read the state of a module",
+      "description": "What a module says about itself: for example the schedules of a relay board and which channel a schedule holds now.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The SmartiLab device."
+        },
+        "module": {
+          "name": "Module",
+          "description": "The id of the module (for example zappy2)."
+        }
+      }
+    },
+    "set_alarm": {
+      "name": "Set an alarm",
+      "description": "Sets an alarm on a number of a device, or changes one: above or below a level for some minutes, or no data for some minutes. Only the owner.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The SmartiLab device."
+        },
+        "alarm_id": {
+          "name": "Alarm",
+          "description": "To change one: its id. Empty to set a new one."
+        },
+        "module": {
+          "name": "Module",
+          "description": "The id of the module."
+        },
+        "property": {
+          "name": "Number",
+          "description": "The id of the number."
+        },
+        "part": {
+          "name": "Of the parts",
+          "description": "For a number of the parts (the traps of a hub): it holds for each one."
+        },
+        "kind": {
+          "name": "Kind",
+          "description": "Above or below a level, or no data."
+        },
+        "level": {
+          "name": "Level",
+          "description": "The level, for above and below."
+        },
+        "minutes": {
+          "name": "Minutes",
+          "description": "For how long, before the notice."
+        },
+        "back": {
+          "name": "Back to normal",
+          "description": "Say also when it is fine again."
+        }
+      }
+    },
+    "remove_alarm": {
+      "name": "Remove an alarm",
+      "description": "Removes an alarm of a device. Only the owner.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The SmartiLab device."
+        },
+        "alarm_id": {
+          "name": "Alarm",
+          "description": "Its id."
+        },
+        "no_data": {
+          "name": "No data",
+          "description": "It is a \"no data\" alarm."
+        }
+      }
+    },
+    "record_service": {
+      "name": "Record a service visit",
+      "description": "Records a service visit on traps: pick the traps, or the hub for all of them. It is written on the cloud: the device can be off.",
+      "fields": {
+        "device_id": {
+          "name": "Traps or hub",
+          "description": "The traps, or the hub for all of its traps."
+        },
+        "type": {
+          "name": "Visit",
+          "description": "What was done."
+        },
+        "note": {
+          "name": "Note",
+          "description": "A note, if you want."
+        }
+      }
+    },
+    "get_part_events": {
+      "name": "Events of a trap",
+      "description": "The last events of a trap: catches, emptyings, refills, alarms, service visits.",
+      "fields": {
+        "device_id": {
+          "name": "Trap",
+          "description": "The trap."
+        },
+        "limit": {
+          "name": "How many",
+          "description": "At most 200."
+        }
+      }
+    },
+    "get_part_stats": {
+      "name": "Sums of the traps",
+      "description": "How many catches, emptyings, refills, battery changes, alarms and service visits in a period, in all and trap by trap. Without a start: since the hub was placed on its site, or the last 30 days.",
+      "fields": {
+        "device_id": {
+          "name": "Hub",
+          "description": "The hub."
+        },
+        "module": {
+          "name": "Module",
+          "description": "The id of the module (for example rattraphub)."
+        },
+        "from": {
+          "name": "From",
+          "description": "ISO 8601 time."
+        },
+        "to": {
+          "name": "To",
+          "description": "ISO 8601 time; without, now."
+        }
+      }
+    }
+  },
+  "selector": {
+    "kind": {
+      "options": {
+        "above": "Above a level",
+        "below": "Below a level",
+        "no_data": "No data"
+      }
+    },
+    "service": {
+      "options": {
+        "cleaning": "Cleaning",
+        "refill": "Liquid refill",
+        "battery": "Battery change",
+        "replace": "Replacement",
+        "move": "Relocation",
+        "check": "Check",
+        "other": "Other"
+      }
     }
   }
 }

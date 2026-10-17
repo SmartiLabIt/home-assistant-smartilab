@@ -108,9 +108,55 @@ class SmartiLabApi:
         path = f"/devices/{device}/modules/{module}/properties/{prop}" + (f"?part={quote(part)}" if part else "")
         return await self._request("PUT", path, {"value": value}, once=True)
 
-    async def run(self, device: str, module: str, part: str | None, action: str) -> dict[str, Any]:
+    async def run(self, device: str, module: str, part: str | None, action: str, data: dict[str, Any] | None = None, confirm: bool = False) -> dict[str, Any]:
+        """An action: a button, or a command of the module with its input (``data``). ``confirm`` for one that asks it."""
         path = f"/devices/{device}/modules/{module}/actions/{action}" + (f"?part={quote(part)}" if part else "")
-        return await self._request("POST", path, {}, once=True)
+        body: dict[str, Any] = {"input": data} if data else {}
+        if confirm:
+            body["confirm"] = True
+        return await self._request("POST", path, body, once=True)
+
+    async def settings(self, device: str, module: str) -> dict[str, Any]:
+        """The settings of a module, read from the device (it must be connected)."""
+        return await self._request("GET", f"/devices/{device}/modules/{module}/settings")
+
+    async def set_settings(self, device: str, module: str, values: dict[str, Any]) -> dict[str, Any]:
+        return await self._request("PATCH", f"/devices/{device}/modules/{module}/settings", {"values": values}, once=True)
+
+    async def document(self, device: str, module: str) -> dict[str, Any]:
+        """What a module says about itself, in its own shape (the schedules of a relay board…)."""
+        return await self._request("GET", f"/devices/{device}/modules/{module}/document")
+
+    async def alarms(self, device: str) -> dict[str, Any]:
+        return await self._request("GET", f"/devices/{device}/alarms")
+
+    async def silences(self, device: str) -> dict[str, Any]:
+        return await self._request("GET", f"/devices/{device}/silences")
+
+    async def alarm(self, device: str, alarm: str | None, no_data: bool, fields: dict[str, Any]) -> dict[str, Any]:
+        """A new alarm (above or below a level, or "no data"), or a change of one (``alarm``: its id)."""
+        route = f"/devices/{device}/" + ("silences" if no_data else "alarms")
+        if alarm:
+            return await self._request("PATCH", f"{route}/{quote(alarm)}", fields, once=True)
+        return await self._request("POST", route, fields, once=True)
+
+    async def unalarm(self, device: str, alarm: str, no_data: bool) -> None:
+        await self._request("DELETE", f"/devices/{device}/" + ("silences" if no_data else "alarms") + f"/{quote(alarm)}", once=True)
+
+    async def stats(self, device: str, module: str, since: str | None = None, until: str | None = None) -> dict[str, Any]:
+        """The sums of the events of the parts the cloud keeps (the traps of a hub), in a period."""
+        query = "&".join(f"{k}={quote(v)}" for k, v in (("from", since), ("to", until)) if v)
+        return await self._request("GET", f"/devices/{device}/modules/{module}/parts/stats" + (f"?{query}" if query else ""))
+
+    async def events(self, device: str, module: str, part: str, limit: int = 50) -> dict[str, Any]:
+        return await self._request("GET", f"/devices/{device}/modules/{module}/parts/{part}/events?limit={int(limit)}")
+
+    async def service(self, device: str, module: str, parts: list[str] | str, kind: str, note: str | None = None) -> dict[str, Any]:
+        """A service visit on parts (their ids, or "all"): written on the cloud, the device can be off."""
+        body: dict[str, Any] = {"parts": parts, "type": kind}
+        if note:
+            body["note"] = note
+        return await self._request("POST", f"/devices/{device}/modules/{module}/parts/services", body, once=True)
 
     async def live_ticket(self) -> dict[str, Any]:
         return await self._request("POST", "/live/ticket", {})
