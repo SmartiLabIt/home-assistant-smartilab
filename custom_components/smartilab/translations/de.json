@@ -1,0 +1,77 @@
+{
+  "config": {
+    "step": {
+      "pick_implementation": {
+        "title": "Anmeldeart wählen"
+      },
+      "reauth_confirm": {
+        "title": "Erneut bei SmartiLab anmelden",
+        "description": "Der Zugang von Home Assistant zu deinem SmartiLab-Konto gilt nicht mehr. Melde dich erneut an, um deine Geräte hier zu behalten."
+      }
+    },
+    "abort": {
+      "already_configured": "Dieses SmartiLab-Konto ist bereits in Home Assistant.",
+      "already_in_progress": "SmartiLab wird bereits hinzugefügt. Schließe das zuerst ab.",
+      "reauth_successful": "Erneut angemeldet.",
+      "wrong_account": "Du hast dich mit einem anderen Konto angemeldet. Melde dich mit dem an, das bereits in Home Assistant ist.",
+      "cannot_connect": "Die SmartiLab-Cloud antwortet gerade nicht. Versuche es in ein paar Minuten erneut.",
+      "oauth_error": "Die Antwort von SmartiLab war ungültig.",
+      "oauth_failed": "Die Anmeldung bei SmartiLab hat nicht geklappt.",
+      "oauth_timeout": "Die Anmeldung bei SmartiLab hat zu lange gedauert.",
+      "oauth_unauthorized": "SmartiLab hat den Zugang abgelehnt.",
+      "missing_configuration": "Die Integration ist nicht eingerichtet.",
+      "missing_credentials": "Das Programm von SmartiLab fehlt.",
+      "authorize_url_timeout": "Die Anmeldeseite konnte nicht rechtzeitig vorbereitet werden.",
+      "no_url_available": "Home Assistant hat keine Adresse für die Rückkehr. [Hilfe lesen]({docs_url})",
+      "user_rejected_authorize": "Du hast Home Assistant nicht erlaubt: {error}",
+      "oauth_implementation_unavailable": "Die Anmeldung bei SmartiLab ist gerade nicht verfügbar."
+    },
+    "create_entry": {
+      "default": "Angemeldet: deine SmartiLab-Geräte werden hinzugefügt."
+    }
+  },
+  "exceptions": {
+    "offline": {
+      "message": "Das Gerät ist gerade nicht verbunden."
+    },
+    "on_hold": {
+      "message": "Das Gerät ist angehalten: es ist in der SmartiLab-Konsole zu sehen."
+    },
+    "timeout": {
+      "message": "Das Gerät hat nicht rechtzeitig geantwortet: es kann es getan haben oder nicht."
+    },
+    "no_remote": {
+      "message": "Die Lizenz dieses Professional-Geräts erlaubt keine Steuerung über das Internet."
+    },
+    "not_writable": {
+      "message": "Dieser Wert kann nur gelesen werden."
+    },
+    "read_only": {
+      "message": "Dieses Gerät ist mit dir nur zum Ansehen geteilt."
+    },
+    "slow_down": {
+      "message": "Zu viele Anfragen für dieses Konto. Versuche es in einer Minute erneut."
+    },
+    "unreachable": {
+      "message": "Die SmartiLab-Cloud ist nicht erreichbar: {error}"
+    },
+    "no_scope": {
+      "message": "Home Assistant durfte das nicht. Entferne SmartiLab und füge es erneut hinzu."
+    },
+    "command_failed": {
+      "message": "Der Befehl ist nicht durchgegangen: {error}"
+    },
+    "refused": {
+      "message": "Das Gerät hat es nicht getan ({status})."
+    },
+    "auth_failed": {
+      "message": "Der Zugang zu SmartiLab gilt nicht mehr: melde dich erneut an."
+    },
+    "update_failed": {
+      "message": "Die SmartiLab-Geräte konnten nicht gelesen werden: {error}"
+    },
+    "not_ready": {
+      "message": "Die Anmeldung bei SmartiLab ist gerade nicht verfügbar."
+    }
+  }
+}
