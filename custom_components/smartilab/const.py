@@ -14,6 +14,7 @@ DEFAULT_SERVER: Final = "https://smartilab.it"
 API_PATH: Final = "/sc/api/v1"
 AUTHORIZE_PATH: Final = "/sc/api/oauth/authorize"
 TOKEN_PATH: Final = "/sc/api/oauth/token"
+REVOKE_PATH: Final = "/sc/api/oauth/revoke"
 
 # The program "Home Assistant" of the SmartiLab cloud: a public client, protected by PKCE.
 CLIENT_ID: Final = "smartilab-home-assistant"

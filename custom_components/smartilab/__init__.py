@@ -16,20 +16,25 @@ from homeassistant.components.application_credentials import ClientCredential, a
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv
+from homeassistant.exceptions import (
+    ConfigEntryAuthFailed,
+    ConfigEntryNotReady,
+    OAuth2TokenRequestError,
+    OAuth2TokenRequestReauthError,
+)
+from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.config_entry_oauth2_flow import (
     ImplementationUnavailableError,
     OAuth2Session,
     async_get_config_entry_implementation,
 )
-from homeassistant.exceptions import OAuth2TokenRequestError, OAuth2TokenRequestReauthError
 from homeassistant.helpers.typing import ConfigType
 
-from .api import SmartiLabApi, SmartiLabError
+from .api import SmartiLabApi, SmartiLabError, give_back
 from .const import CLIENT_ID, CONF_BROWSER, CONF_SERVER, DATA_URLS, DEFAULT_SERVER, DOMAIN
 from .coordinator import SmartiLabCoordinator
+from .entity import device_info
 from .live import LiveChannel
 from .model import Point
 from .urls import Urls, urls_of
@@ -89,6 +94,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: SmartiLabConfigEntry) ->
     api = SmartiLabApi(async_get_clientsession(hass), urls.server, access, hass.config.language)
     coordinator = SmartiLabCoordinator(hass, entry, api)
     await coordinator.async_config_entry_first_refresh()
+    # A device with parts (a hub with its traps) goes in the device registry first: its parts point to it
+    # by the id it has there.
+    registry = dr.async_get(hass)
+    for did, dev in (coordinator.data or {}).items():
+        if dev.parts:
+            coordinator.parents[did] = registry.async_get_or_create(config_entry_id=entry.entry_id, **device_info(dev, urls.browser)).id
     live = LiveChannel(hass, entry, coordinator, api, urls.server, urls.browser)
     entry.runtime_data = SmartiLabRuntime(coordinator=coordinator, live=live, site=urls.browser)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -109,3 +120,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: SmartiLabConfigEntry) ->
 
 async def async_unload_entry(hass: HomeAssistant, entry: SmartiLabConfigEntry) -> bool:
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: SmartiLabConfigEntry) -> None:
+    """SmartiLab removed from Home Assistant: the access is given back, and leaves the Accesses of the console."""
+    await give_back(async_get_clientsession(hass), urls_of(hass).server, entry.data.get("token"))

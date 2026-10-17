@@ -47,6 +47,8 @@ class SmartiLabCoordinator(DataUpdateCoordinator[dict[str, DeviceData]]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, api: SmartiLabApi) -> None:
         super().__init__(hass, LOGGER, config_entry=entry, name=DOMAIN, update_interval=timedelta(seconds=POLL_WITHOUT_LIVE))
         self.api = api
+        # The devices with parts, by their id in the device registry of Home Assistant (__init__.py).
+        self.parents: dict[str, str] = {}
 
     def set_live(self, up: bool) -> None:
         """The live channel is connected, or not: read the whole state rarely, or every minute."""

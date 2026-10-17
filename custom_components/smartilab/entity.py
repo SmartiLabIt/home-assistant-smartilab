@@ -16,6 +16,9 @@ from .model import Point, value_of
 
 # The codes of the API that Home Assistant says in words (translations, "exceptions").
 _SAID = {"offline", "on_hold", "timeout", "no_remote", "not_writable", "read_only", "slow_down", "unreachable", "no_scope"}
+# From Home Assistant 2026.8 a part names its device by the id in the device registry (via_device_id);
+# before, by the identifiers of the device (via_device, which stops working with 2027.8).
+_VIA_ID = "via_device_id" in DeviceInfo.__annotations__
 
 
 class SmartiLabEntity(CoordinatorEntity[SmartiLabCoordinator]):
@@ -31,7 +34,8 @@ class SmartiLabEntity(CoordinatorEntity[SmartiLabCoordinator]):
         self._attr_name = point.name
         if point.technical:
             self._attr_entity_category = EntityCategory.DIAGNOSTIC
-        self._attr_device_info = _device_info(coordinator.data[point.device], point, site)
+        dev = coordinator.data[point.device]
+        self._attr_device_info = device_info(dev, site) if point.part is None else _part_info(dev, point, coordinator.parents.get(point.device))
 
     @property
     def device_data(self) -> DeviceData | None:
@@ -69,14 +73,25 @@ class SmartiLabEntity(CoordinatorEntity[SmartiLabCoordinator]):
                                                 "value": value if shown is None else shown, "at": None})
 
 
-def _device_info(dev: DeviceData, point: Point, site: str) -> DeviceInfo:
+def device_info(dev: DeviceData, site: str) -> DeviceInfo:
+    """A SmartiLab device in the device registry: name, product, firmware, the console to open it."""
     info = dev.info
     product = info.get("product") or {}
     firmware = info.get("firmware") or {}
-    if point.part is not None:
-        part = next((x for x in dev.parts if x.module == point.module and x.id == point.part), None)
-        return DeviceInfo(identifiers={(DOMAIN, f"{point.device}/{point.module}/{point.part}")}, name=part.name if part else point.part,
-                          manufacturer=MANUFACTURER, via_device=(DOMAIN, point.device))
-    return DeviceInfo(identifiers={(DOMAIN, point.device)}, name=str(info.get("name") or point.device), manufacturer=MANUFACTURER,
+    did = str(info.get("id"))
+    return DeviceInfo(identifiers={(DOMAIN, did)}, name=str(info.get("name") or did), manufacturer=MANUFACTURER,
                       model=product.get("title"), model_id=product.get("code"), sw_version=firmware.get("version"),
                       hw_version=firmware.get("board"), configuration_url=site.rstrip("/") + "/console/")
+
+
+def _part_info(dev: DeviceData, point: Point, parent: str | None) -> DeviceInfo:
+    """A part (a trap of a hub) as a device of its own, under its device. ``parent``: the id of the device in
+    the device registry, where it went first (__init__.py)."""
+    part = next((x for x in dev.parts if x.module == point.module and x.id == point.part), None)
+    out = DeviceInfo(identifiers={(DOMAIN, f"{point.device}/{point.module}/{point.part}")}, name=part.name if part else point.part,
+                     manufacturer=MANUFACTURER)
+    if _VIA_ID and parent is not None:
+        out["via_device_id"] = parent
+    elif not _VIA_ID:
+        out["via_device"] = (DOMAIN, point.device)
+    return out

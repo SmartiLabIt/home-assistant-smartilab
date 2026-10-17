@@ -25,8 +25,9 @@ anywhere: Home Assistant and the devices do not need to be on the same network.
 3. Back in Home Assistant your devices appear, the ones you own and the ones shared with you.
 
 Home Assistant may read your devices and command them, never more than your account can: a device
-shared with you to be seen only cannot be commanded. You remove the access from the SmartiLab
-console (Settings, Integrations, Access), and it stops at once.
+shared with you to be seen only cannot be commanded. Removing SmartiLab from Home Assistant gives
+the access back: it leaves the console at once. You can also remove it from the SmartiLab console
+(Settings, Integrations, Access), and it stops at once.
 
 ## What you see
 
@@ -82,7 +83,8 @@ SmartiLab**: si apre la pagina di accesso di smartilab.it, entri e premi **Conse
 Home Assistant compaiono i tuoi dispositivi, i tuoi e quelli condivisi con te.
 
 Home Assistant può leggere e comandare i tuoi dispositivi, mai più di quello che può il tuo account.
-L'accesso lo togli dalla console SmartiLab (Impostazioni, Integrazioni, Accessi), e smette subito.
+Eliminando SmartiLab da Home Assistant l'accesso si toglie anche dalla console; lo puoi togliere anche
+dalla console SmartiLab (Impostazioni, Integrazioni, Accessi), e smette subito.
 
 Per un dispositivo Professional serve una licenza in vigore che dia il controllo da internet. Se usi
 anche il collegamento di casa delle schede LoopMaxPro (MQTT), lo stesso dispositivo compare due

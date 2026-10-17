@@ -15,7 +15,7 @@ import uuid
 
 from aiohttp import ClientError, ClientSession, ClientTimeout
 
-from .const import API_PATH, LOGGER
+from .const import API_PATH, CLIENT_ID, LOGGER, REVOKE_PATH
 
 
 class SmartiLabError(Exception):
@@ -29,6 +29,19 @@ class SmartiLabError(Exception):
 
 class SmartiLabAuthError(SmartiLabError):
     """The access is no longer valid: sign in again."""
+
+
+async def give_back(session: ClientSession, server: str, token: dict[str, Any] | None) -> None:
+    """The access goes back to the cloud (RFC 7009): it closes there, and leaves the Accesses of the console.
+    When the entry is removed, or an access was asked and is not used. Whatever happens, nothing is raised."""
+    secret = str((token or {}).get("refresh_token") or (token or {}).get("access_token") or "")
+    if secret == "":
+        return
+    try:
+        async with session.post(server.rstrip("/") + REVOKE_PATH, data={"token": secret, "client_id": CLIENT_ID}, timeout=ClientTimeout(total=15)) as resp:
+            LOGGER.debug("SmartiLab: access given back: %s %s", resp.status, (await resp.text())[:400])
+    except (ClientError, TimeoutError) as err:
+        LOGGER.debug("SmartiLab: the access could not be given back: %s", err)
 
 
 class SmartiLabApi:
